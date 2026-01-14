@@ -11,7 +11,6 @@ public class Category
     public bool Featured { get; set; }
 
     // Construtor padrão para o dapper usar
-    public Category() { }
     public Category(string title, string url, string summary, int order, string description, bool featured)
     {
         Id = Guid.NewGuid();
