@@ -1,24 +1,35 @@
 ﻿using Microsoft.Data.SqlClient;
-using DapperDataAccess.Query;
 using DapperDataAccess.Command;
+using DapperDataAccess.Models;
+using DapperDataAccess.Query;
 
 var connectionString = "Server=localhost,1433;Database=balta;User ID=sa;Password=1q2w3e4r@#$;Trusted_Connection=False; TrustServerCertificate=True;";
 
 using var connection = new SqlConnection(connectionString);
+var commandCategory = new CommandCategory();
+var queryCategories = new QueryCategories();
 
-// Query
-// var categories = QueryCategories.ListCategories(connection);
-// foreach (var c in categories)
-// {
-//      Console.WriteLine($"{c.Id} - {c.Title}");
-// }
+// ----------------------  get all categories  ---------------------- //
+var categories = queryCategories.ListCategories(connection);
+foreach (var c in categories)
+{
+     Console.WriteLine($"{c.Id} - {c.Title}");
+}
 
-var category = QueryCategories.GetById(connection, new Guid("09CE0B7B-CFCA-497B-92C0-3290AD9D5142"));
-Console.WriteLine(category);
-// Command
+// ----------------------  get by id  ---------------------- //
+var category = queryCategories.GetById(connection, new Guid("09CE0B7B-CFCA-497B-92C0-3290AD9D5142"));
+Console.WriteLine(category.Title);
 
-// CreateCategories(connection);
-CommandCategory.UpdateCategoty(connection);
+// ----------------------  insert category  ---------------------- //
+var newCategory = new Category("New Category3", "new-category-title2", "summary2", 34, "test insert category", true);
+commandCategory.CreateCategories(connection, newCategory);
+
+// ----------------------  get by name  ---------------------- //
+var categoryByName = queryCategories.GetByName(connection, "New Category3");
+Console.WriteLine(categoryByName.Title);
+
+
+// CommandCategory.UpdateCategoty(connection);
 
 
 
