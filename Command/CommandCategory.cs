@@ -4,11 +4,12 @@ using Microsoft.Data.SqlClient;
 
 namespace DapperDataAccess.Command;
 
-public static class CommandCategory
+public class CommandCategory
 {
-    public static void CreateCategories(SqlConnection connection)
+    public void CreateCategories(SqlConnection connection, Category category)
     {
-
+        // usar parametros do SQLServer ao invés de interpolação de strings
+        // para evitar ataques de SQLInjection
         var insertSql = @"INSERT INTO 
                     [Category] 
                   VALUES (
@@ -20,15 +21,6 @@ public static class CommandCategory
                       @Description,
                       @Featured)";
 
-
-        var category = new Category(
-            "Amazon AWS",
-            "amazon",
-            "AWS Cloud",
-            8,
-            "CAtegoria destinada a serviços AWS",
-            false
-        );
         var rows = connection.Execute(insertSql, new
         {
             category.Id,
@@ -43,9 +35,21 @@ public static class CommandCategory
         Console.WriteLine($"{rows}Insert successful");
     }
 
-    public static void UpdateCategoty(SqlConnection connection)
+    public void UpdateTitleCategoty(SqlConnection connection, string title, Guid id)
     {
         var updateSql = "UPDATE [Category] SET [Title] = @title WHERE  [Id] = @id";
+        var rows = connection.Execute(updateSql, new
+        {
+            title,
+            id,
+        });
+
+        Console.WriteLine($"{rows}Insert successful");
+    }
+    
+    public void DeleteCategoty(SqlConnection connection,  Guid id)
+    {
+        var updateSql = "DELETE FROM [Category] WHERE [Id] = @Id";
         var rows = connection.Execute(updateSql, new
         {
             title = "teste",
@@ -54,17 +58,6 @@ public static class CommandCategory
 
         Console.WriteLine($"{rows}Insert successful");
     }
-
-
-    public static void DeleteCategoty(SqlConnection connection)
-    {
-        var updateSql = "UPDATE [Category] SET [Title] = @title WHERE  [Id] = @id";
-        var rows = connection.Execute(updateSql, new
-        {
-            title = "teste",
-            id = new Guid("3E0B748B-8D26-4753-9393-00F7F49972C4"),
-        });
-
-        Console.WriteLine($"{rows}Insert successful");
-    }
+    
+    
 }
